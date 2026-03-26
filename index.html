@@ -86,7 +86,7 @@
     <div id="app" class="max-w-5xl mx-auto">
         <!-- HEADER -->
         <header class="text-center mb-8">
-            <h1 class="text-4xl md:text-6xl neon-text mb-2">TECNO-BOT 2.0</h1>
+            <h1 class="text-4xl md:text-6xl neon-text mb-2 uppercase">Tecno-Bot 2.0</h1>
             <p class="text-cyan-500 font-medium tracking-widest uppercase">Misión: Evolución de las Comunicaciones</p>
         </header>
 
@@ -131,7 +131,7 @@
                 <div id="user-info" class="text-xl text-white font-bold"></div>
                 <div class="flex items-center space-x-4">
                     <div class="text-right">
-                        <div class="text-xs text-cyan-500 uppercase font-bold">Sincronización</div>
+                        <div class="text-xs text-cyan-500 uppercase font-bold">Sincronización Automática</div>
                         <div id="progress-val" class="text-2xl neon-text">0%</div>
                     </div>
                     <div class="w-32 bg-gray-800 rounded-full h-3">
@@ -143,19 +143,19 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                 <button onclick="showEtapa(1)" id="btn-e1" class="glass-card p-6 text-center transition-all duration-300">
                     <span class="block text-xs text-gray-500 mb-1">FASE 01</span>
-                    <span class="font-bold">ARQUEOLOGÍA</span>
+                    <span class="font-bold uppercase">Arqueología</span>
                 </button>
                 <button onclick="showEtapa(2)" id="btn-e2" class="glass-card p-6 text-center transition-all duration-300 step-locked">
                     <span class="block text-xs text-gray-500 mb-1">FASE 02</span>
-                    <span class="font-bold">SISTEMAS</span>
+                    <span class="font-bold uppercase">Sistemas</span>
                 </button>
                 <button onclick="showEtapa(3)" id="btn-e3" class="glass-card p-6 text-center transition-all duration-300 step-locked">
                     <span class="block text-xs text-gray-500 mb-1">FASE 03</span>
-                    <span class="font-bold">ÉTICA</span>
+                    <span class="font-bold uppercase">Ética</span>
                 </button>
                 <button onclick="showEtapa(4)" id="btn-e4" class="glass-card p-6 text-center transition-all duration-300 step-locked">
                     <span class="block text-xs text-gray-500 mb-1">FASE 04</span>
-                    <span class="font-bold">RETO FINAL</span>
+                    <span class="font-bold uppercase">Reto Final</span>
                 </button>
             </div>
 
@@ -164,7 +164,10 @@
             </div>
 
             <div class="mt-8 flex flex-col md:flex-row gap-4 justify-between">
-                <button onclick="saveProgress(true)" class="bg-cyan-600 hover:bg-cyan-500 px-8 py-3 rounded-xl font-bold transition-colors">GUARDAR AVANCE MANUAL</button>
+                <div class="text-xs text-gray-500 italic flex items-center">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></span>
+                    Sus datos se guardan automáticamente en cada pulsación.
+                </div>
                 <button onclick="logout()" class="text-gray-500 hover:text-white transition-colors underline">Finalizar Sesión</button>
             </div>
         </div>
@@ -173,10 +176,10 @@
         <div id="admin-panel" class="hidden glass-card p-8">
             <div class="flex justify-between items-center mb-8 border-b border-cyan-900 pb-4">
                 <div>
-                    <h2 class="text-3xl neon-text">CENTRO DE CONTROL</h2>
-                    <p class="text-gray-400">Monitoreo de Cadetes</p>
+                    <h2 class="text-3xl neon-text uppercase">Centro de Control</h2>
+                    <p class="text-gray-400">Panel de Monitoreo Docente</p>
                 </div>
-                <button onclick="hideAdmin()" class="bg-red-900/40 hover:bg-red-700 text-red-200 px-6 py-2 rounded-lg border border-red-500">SALIR</button>
+                <button onclick="hideAdmin()" class="bg-red-900/40 hover:bg-red-700 text-red-200 px-6 py-2 rounded-lg border border-red-500 uppercase font-bold">Cerrar Panel</button>
             </div>
             
             <div id="admin-data" class="space-y-8">
@@ -188,37 +191,48 @@
     <!-- MODAL DOCENTE -->
     <div id="admin-modal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center p-4 z-50">
         <div class="glass-card p-10 max-w-sm w-full text-center border-2 border-cyan-500">
-            <h3 class="text-2xl neon-text mb-6">AUTENTICACIÓN</h3>
+            <h3 class="text-2xl neon-text mb-6 uppercase">Autenticación</h3>
             <input type="password" id="admin-pass" class="w-full p-4 mb-6 rounded-lg text-center text-2xl tracking-[1em]" maxlength="4">
-            <button onclick="checkAdmin()" class="w-full btn-neon p-4 rounded-xl">VALIDAR</button>
-            <button onclick="closeAdminModal()" class="mt-4 text-gray-500">Cerrar</button>
+            <button onclick="checkAdmin()" class="w-full btn-neon p-4 rounded-xl font-bold">VALIDAR FRECUENCIA</button>
+            <button onclick="closeAdminModal()" class="mt-4 text-gray-500">Cancelar</button>
         </div>
     </div>
 
     <script>
         let currentUser = null;
-        let db = JSON.parse(localStorage.getItem('tecno_db_v2')) || [];
+        let db = [];
+
+        // Cargar base de datos inicial
+        function loadDB() {
+            const data = localStorage.getItem('tecno_db_v2');
+            db = data ? JSON.parse(data) : [];
+        }
 
         const etapasConfig = {
-            1: { title: "ETAPA 1: ARQUEOLOGÍA", desc: "Investiga 4 hitos históricos.", id: 'e1' },
-            2: { title: "ETAPA 2: SISTEMAS", desc: "Compara Telégrafo vs WhatsApp.", id: 'e2' },
-            3: { title: "ETAPA 3: ÉTICA", desc: "Análisis FODA ambiental.", id: 'e3' },
-            4: { title: "ETAPA 4: RETO FINAL", desc: "Sistema sin electricidad.", id: 'e4' }
+            1: { title: "ETAPA 1: ARQUEOLOGÍA E IDENTIFICACIÓN", desc: "Usa tu IA para investigar 4 hitos históricos. Explica la necesidad que los creó.", id: 'e1' },
+            2: { title: "ETAPA 2: ANÁLISIS DE SISTEMAS", desc: "Compara el sistema del Telégrafo frente al de WhatsApp mediante bloques.", id: 'e2' },
+            3: { title: "ETAPA 3: ÉTICA Y SUSTENTABILIDAD", desc: "Realiza un análisis FODA sobre el impacto de los smartphones en el ambiente.", id: 'e3' },
+            4: { title: "ETAPA 4: EL RETO FINAL", desc: "Diseña un sistema de comunicación de emergencia sin electricidad.", id: 'e4' }
         };
 
         function startApp() {
+            loadDB();
             const nombre = document.getElementById('nombre').value.trim();
             const apellido = document.getElementById('apellido').value.trim();
             const curso = document.getElementById('curso').value;
             const turno = document.getElementById('turno').value;
 
-            if (!nombre || !apellido || !curso || !turno) return alert("Complete los datos");
+            if (!nombre || !apellido || !curso || !turno) return alert("Por favor complete todos los datos de acceso.");
 
-            // Buscar si ya existe para retomar progreso
-            let existing = db.find(u => u.nombre.toLowerCase() === nombre.toLowerCase() && u.apellido.toLowerCase() === apellido.toLowerCase() && u.curso === curso);
+            // Buscar registro existente para no duplicar y permitir retomar
+            let existing = db.find(u => 
+                u.nombre.toLowerCase() === nombre.toLowerCase() && 
+                u.apellido.toLowerCase() === apellido.toLowerCase() && 
+                u.curso === curso
+            );
             
             if (existing) {
-                if (confirm("Ya existe un registro con estos datos. ¿Deseas retomar donde dejaste? (Cancelar borrará lo anterior)")) {
+                if (confirm("Se detectó una sesión previa. ¿Deseas retomar tus avances?")) {
                     currentUser = existing;
                 } else {
                     db = db.filter(u => u.id !== existing.id);
@@ -230,7 +244,7 @@
 
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
-            document.getElementById('user-info').innerHTML = `CADETE: ${apellido.toUpperCase()}, ${nombre.toUpperCase()} | ${curso}`;
+            document.getElementById('user-info').innerHTML = `CADETE: <span class="neon-text">${apellido.toUpperCase()}, ${nombre.toUpperCase()}</span> | CURSO: ${curso} | TURNO: ${turno}`;
             showEtapa(1);
             calculateProgress();
         }
@@ -248,72 +262,91 @@
         }
 
         function showEtapa(n) {
-            if (n > 1 && (currentUser.respuestas[`e${n-1}`] || "").length < 30) {
-                return showToast(`Completa la Fase ${n-1} para avanzar.`);
+            // Verificar si la etapa anterior está completa para permitir avance
+            if (n > 1) {
+                const prevKey = `e${n-1}`;
+                if ((currentUser.respuestas[prevKey] || "").length < 30) {
+                    return showToast(`Misión bloqueada: Completa la Fase ${n-1} con al menos 30 caracteres.`);
+                }
             }
 
             const config = etapasConfig[n];
             const container = document.getElementById('etapa-content');
             
-            // UI Update
+            // Actualizar visualmente los botones de fases
             [1,2,3,4].forEach(i => {
                 const btn = document.getElementById(`btn-e${i}`);
                 btn.classList.remove('step-active');
-                if (i === 1 || (currentUser.respuestas[`e${i-1}`] && currentUser.respuestas[`e${i-1}`].length >= 30)) {
+                
+                const prevResp = currentUser.respuestas[`e${i-1}`] || "";
+                if (i === 1 || prevResp.length >= 30) {
                     btn.classList.remove('step-locked');
-                } else { btn.classList.add('step-locked'); }
+                } else { 
+                    btn.classList.add('step-locked'); 
+                }
             });
             document.getElementById(`btn-e${n}`).classList.add('step-active');
 
             container.innerHTML = `
-                <h3 class="text-3xl neon-text mb-2">${config.title}</h3>
-                <p class="mb-6 text-gray-400 italic">${config.desc}</p>
-                <textarea 
-                    id="area-${config.id}" 
-                    class="w-full h-64 p-6 rounded-xl font-mono text-sm" 
-                    oninput="updateLocalResp('${config.id}', this.value)">${currentUser.respuestas[config.id]}</textarea>
+                <div class="animate-in fade-in duration-500">
+                    <h3 class="text-3xl neon-text mb-2 uppercase font-bold tracking-tighter">${config.title}</h3>
+                    <p class="mb-6 text-gray-400 italic">${config.desc}</p>
+                    <textarea 
+                        id="area-${config.id}" 
+                        class="w-full h-80 p-6 rounded-xl font-mono text-sm leading-relaxed border border-cyan-500/20" 
+                        placeholder="Escribe tu análisis técnico aquí..."
+                        oninput="updateLocalResp('${config.id}', this.value)">${currentUser.respuestas[config.id]}</textarea>
+                </div>
             `;
         }
 
         function updateLocalResp(key, val) {
+            // 1. Actualizar el objeto local del usuario
             currentUser.respuestas[key] = val;
+            
+            // 2. Calcular progreso inmediatamente
             calculateProgress();
-            saveProgress(false); // Guardado automático silencioso
+
+            // 3. ACTUALIZACIÓN CRÍTICA: Buscar y actualizar en el array DB global
+            const idx = db.findIndex(u => u.id === currentUser.id);
+            if (idx > -1) {
+                db[idx].respuestas = {...currentUser.respuestas};
+                db[idx].progreso = currentUser.progreso;
+                db[idx].calificacion = currentUser.calificacion;
+                
+                // 4. Guardar en Storage para que el Docente vea los cambios
+                localStorage.setItem('tecno_db_v2', JSON.stringify(db));
+            }
         }
 
         function calculateProgress() {
             let filled = 0;
-            if (currentUser.respuestas.e1.length >= 30) filled++;
-            if (currentUser.respuestas.e2.length >= 30) filled++;
-            if (currentUser.respuestas.e3.length >= 30) filled++;
-            if (currentUser.respuestas.e4.length >= 30) filled++;
+            const threshold = 30;
+            if ((currentUser.respuestas.e1 || "").length >= threshold) filled++;
+            if ((currentUser.respuestas.e2 || "").length >= threshold) filled++;
+            if ((currentUser.respuestas.e3 || "").length >= threshold) filled++;
+            if ((currentUser.respuestas.e4 || "").length >= threshold) filled++;
             
             currentUser.progreso = Math.round((filled / 4) * 100);
+            
             document.getElementById('progress-val').innerText = `${currentUser.progreso}%`;
             document.getElementById('progress-bar-fill').style.width = `${currentUser.progreso}%`;
             
-            if (currentUser.progreso === 100 && currentUser.calificacion === 'Pendiente') {
+            // Lógica de calificación automática
+            if (currentUser.progreso === 100 && (currentUser.calificacion === 'Pendiente' || currentUser.calificacion === 'EN PROCESO')) {
                 currentUser.calificacion = 'COMPLETADO';
-            }
-        }
-
-        function saveProgress(showMsg) {
-            const idx = db.findIndex(u => u.id === currentUser.id);
-            if (idx > -1) {
-                db[idx] = JSON.parse(JSON.stringify(currentUser));
-                localStorage.setItem('tecno_db_v2', JSON.stringify(db));
-                if (showMsg) showToast("AVANCE GUARDADO EN BASE DE DATOS");
+            } else if (currentUser.progreso < 100) {
+                currentUser.calificacion = 'EN PROCESO';
             }
         }
 
         function logout() {
-            if (confirm("¿Finalizar?")) {
-                saveProgress(false);
+            if (confirm("¿Seguro que deseas finalizar la sesión de hoy?")) {
                 location.reload();
             }
         }
 
-        // ADMIN
+        // --- FUNCIONES MODO DOCENTE ---
         function showAdminPrompt() { document.getElementById('admin-modal').classList.remove('hidden'); }
         function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
         
@@ -322,14 +355,13 @@
                 closeAdminModal();
                 showAdminPanel();
             } else {
-                alert("Error");
+                alert("Frecuencia de acceso incorrecta.");
                 document.getElementById('admin-pass').value = '';
             }
         }
 
         function showAdminPanel() {
-            // Recargar DB para ver cambios de otros usuarios
-            db = JSON.parse(localStorage.getItem('tecno_db_v2')) || [];
+            loadDB(); // Recargar datos frescos antes de mostrar
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.add('hidden');
             document.getElementById('admin-panel').classList.remove('hidden');
@@ -350,38 +382,55 @@
                 const alumnos = db.filter(u => u.curso === c);
                 if (alumnos.length > 0) {
                     html += `
-                        <div class="glass-card p-4">
-                            <h3 class="text-xl neon-text mb-4">CURSO: ${c}</h3>
-                            <table class="w-full text-sm">
-                                <thead class="text-cyan-500 border-b border-gray-800">
-                                    <tr>
-                                        <th class="p-2 text-left">Alumno</th>
-                                        <th class="p-2">Progreso</th>
-                                        <th class="p-2">Nota</th>
-                                        <th class="p-2 text-right">Ver</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        <div class="glass-card p-6 border-l-4 border-cyan-500">
+                            <h3 class="text-2xl neon-text mb-4 uppercase">División: ${c}</h3>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-left">
+                                    <thead class="text-cyan-500 border-b border-gray-800 uppercase text-xs">
+                                        <tr>
+                                            <th class="p-3">Cadete</th>
+                                            <th class="p-3">Turno</th>
+                                            <th class="p-3 text-center">Progreso</th>
+                                            <th class="p-3">Estado / Nota</th>
+                                            <th class="p-3 text-right">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-900">
                     `;
                     alumnos.sort((a,b) => a.apellido.localeCompare(b.apellido)).forEach(u => {
+                        const rowColor = u.progreso === 100 ? 'text-green-400' : 'text-gray-300';
                         html += `
-                            <tr class="border-b border-gray-900">
-                                <td class="p-2 font-bold">${u.apellido}, ${u.nombre}</td>
-                                <td class="p-2 text-center">${u.progreso}%</td>
-                                <td class="p-2 text-center">
-                                    <input type="text" class="w-16 text-center bg-black" value="${u.calificacion}" 
+                            <tr class="hover:bg-cyan-900/10 transition-colors">
+                                <td class="p-3 font-bold ${rowColor}">${u.apellido.toUpperCase()}, ${u.nombre}</td>
+                                <td class="p-3 text-gray-500">${u.turno}</td>
+                                <td class="p-3">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <div class="w-20 bg-gray-800 h-2 rounded-full overflow-hidden">
+                                            <div class="bg-cyan-500 h-full" style="width: ${u.progreso}%"></div>
+                                        </div>
+                                        <span class="text-xs">${u.progreso}%</span>
+                                    </div>
+                                </td>
+                                <td class="p-3">
+                                    <input type="text" class="bg-black/50 border border-gray-700 rounded px-2 py-1 text-center w-32 focus:border-cyan-500" 
+                                           value="${u.calificacion}" 
                                            onchange="updateGrade(${u.id}, this.value)">
                                 </td>
-                                <td class="p-2 text-right">
-                                    <button onclick="viewDetails(${u.id})" class="text-cyan-400">📄</button>
+                                <td class="p-3 text-right">
+                                    <button onclick="viewDetails(${u.id})" class="bg-cyan-900/50 hover:bg-cyan-500 hover:text-black p-2 rounded-lg transition-all" title="Ver informe">
+                                        👁️ Ver Trabajos
+                                    </button>
                                 </td>
                             </tr>
                         `;
                     });
-                    html += `</tbody></table></div>`;
+                    html += `</tbody></table></div></div>`;
                 }
             });
-            container.innerHTML = html || "<p class='text-center'>Sin datos</p>";
+            container.innerHTML = html || `
+                <div class="text-center py-20">
+                    <p class="text-gray-600 italic">No se encontraron registros de cadetes en la base de datos.</p>
+                </div>`;
         }
 
         function updateGrade(id, val) {
@@ -389,33 +438,57 @@
             if (idx > -1) {
                 db[idx].calificacion = val;
                 localStorage.setItem('tecno_db_v2', JSON.stringify(db));
-                showToast("Nota actualizada");
+                showToast("Sincronización de nota exitosa");
             }
         }
 
         function viewDetails(id) {
             const u = db.find(user => user.id === id);
-            const win = window.open("", "Reporte", "width=500,height=600");
+            const win = window.open("", "ReporteTecnico", "width=700,height=800");
             win.document.write(`
-                <body style="background:#111;color:#0f0;font-family:monospace;padding:20px;">
-                    <h2>CADETE: ${u.apellido}, ${u.nombre}</h2>
-                    <p>CURSO: ${u.curso} | TURNO: ${u.turno}</p>
-                    <hr>
-                    <p><b>ETAPA 1:</b><br>${u.respuestas.e1}</p>
-                    <p><b>ETAPA 2:</b><br>${u.respuestas.e2}</p>
-                    <p><b>ETAPA 3:</b><br>${u.respuestas.e3}</p>
-                    <p><b>ETAPA 4:</b><br>${u.respuestas.e4}</p>
+                <html>
+                <head><title>Informe de Cadete: ${u.apellido}</title></head>
+                <body style="background:#0a0a0c;color:#e0e0e0;font-family:sans-serif;padding:40px;line-height:1.6;">
+                    <h1 style="color:#00f2ff;border-bottom:2px solid #00f2ff;padding-bottom:10px;">INFORME TÉCNICO DE COMUNICACIONES</h1>
+                    <p><b>CADETE:</b> ${u.apellido.toUpperCase()}, ${u.nombre} | <b>CURSO:</b> ${u.curso} | <b>TURNO:</b> ${u.turno}</p>
+                    <hr style="border:0;border-top:1px solid #333;margin:20px 0;">
+                    
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 1: Arqueología e Identificación</h3>
+                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e1 || 'SIN DATOS'}</div>
+                    </div>
+                    
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 2: Análisis de Sistemas</h3>
+                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e2 || 'SIN DATOS'}</div>
+                    </div>
+                    
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 3: Ética y Sustentabilidad</h3>
+                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e3 || 'SIN DATOS'}</div>
+                    </div>
+                    
+                    <div style="margin-bottom:30px;">
+                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 4: El Reto Final</h3>
+                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e4 || 'SIN DATOS'}</div>
+                    </div>
+                    
+                    <button onclick="window.print()" style="background:#00f2ff;color:#000;border:0;padding:10px 20px;font-weight:bold;border-radius:5px;cursor:pointer;">Imprimir Reporte</button>
                 </body>
+                </html>
             `);
         }
 
         function showToast(msg) {
             const t = document.createElement('div');
-            t.className = "fixed bottom-5 left-1/2 -translate-x-1/2 bg-cyan-700 px-6 py-2 rounded-full text-xs z-50";
+            t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-cyan-900 border border-cyan-400 text-cyan-100 px-8 py-3 rounded-full text-sm font-bold z-50 shadow-2xl";
             t.innerText = msg;
             document.body.appendChild(t);
-            setTimeout(() => t.remove(), 2000);
+            setTimeout(() => t.remove(), 2500);
         }
+
+        // Inicializar DB al cargar
+        window.onload = loadDB;
     </script>
 </body>
 </html>
