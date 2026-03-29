@@ -18,7 +18,6 @@
             background-attachment: fixed;
             min-height: 100vh;
         }
-
         .glass-card {
             background: rgba(20, 20, 25, 0.85);
             backdrop-filter: blur(15px);
@@ -26,59 +25,29 @@
             border-radius: 20px;
             box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.8);
         }
-
         .neon-text {
             color: #00f2ff;
             text-shadow: 0 0 15px rgba(0, 242, 255, 0.6);
             font-family: 'Orbitron', sans-serif;
         }
-
         .step-active {
             border: 2px solid #00f2ff;
             background: rgba(0, 242, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
         }
-
         .step-locked {
             opacity: 0.5;
             cursor: not-allowed;
             filter: grayscale(1);
         }
-
-        input, select, textarea {
+        textarea {
             background: rgba(0, 0, 0, 0.4) !important;
             border: 1px solid rgba(0, 242, 255, 0.3) !important;
             color: #00f2ff !important;
-            transition: all 0.3s;
         }
-
-        input:focus, textarea:focus {
-            border-color: #00f2ff !important;
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.4);
-            outline: none;
-        }
-
         .btn-neon {
             background: linear-gradient(45deg, #00c6ff, #0072ff);
-            transition: all 0.4s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
             font-family: 'Orbitron', sans-serif;
         }
-
-        .btn-neon:hover:not(:disabled) {
-            box-shadow: 0 0 25px rgba(0, 198, 255, 0.8);
-            transform: scale(1.02);
-        }
-
-        .btn-neon:disabled {
-            background: #444;
-            cursor: not-allowed;
-        }
-
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0a0a0c; }
-        ::-webkit-scrollbar-thumb { background: #00f2ff; border-radius: 10px; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -92,285 +61,226 @@
 
         <!-- PANTALLA DE INGRESO -->
         <div id="login-screen" class="glass-card p-10 max-w-lg mx-auto">
-            <div class="text-center mb-8">
-                <div class="inline-block p-4 rounded-full bg-cyan-900/30 mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                </div>
-                <h2 class="text-3xl neon-text">ACCESO CADETE</h2>
-            </div>
-            
+            <h2 class="text-3xl neon-text text-center mb-8">ACCESO CADETE</h2>
             <div class="space-y-5">
                 <div class="grid grid-cols-2 gap-4">
-                    <input type="text" id="nombre" placeholder="Nombre" class="w-full p-4 rounded-lg">
-                    <input type="text" id="apellido" placeholder="Apellido" class="w-full p-4 rounded-lg">
+                    <input type="text" id="nombre" placeholder="Nombre" class="w-full p-4 rounded-lg bg-black/40 border border-cyan-500/30">
+                    <input type="text" id="apellido" placeholder="Apellido" class="w-full p-4 rounded-lg bg-black/40 border border-cyan-500/30">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <select id="curso" class="p-4 rounded-lg">
+                    <select id="curso" class="p-4 rounded-lg bg-black/40 border border-cyan-500/30">
                         <option value="" disabled selected>Curso</option>
-                        <option value="2-1">2° 1</option>
-                        <option value="2-2">2° 2</option>
-                        <option value="2-3">2° 3</option>
-                        <option value="2-4">2° 4</option>
+                        <option value="2-1">2° 1</option><option value="2-2">2° 2</option>
+                        <option value="2-3">2° 3</option><option value="2-4">2° 4</option>
                     </select>
-                    <select id="turno" class="p-4 rounded-lg">
+                    <select id="turno" class="p-4 rounded-lg bg-black/40 border border-cyan-500/30">
                         <option value="" disabled selected>Turno</option>
-                        <option value="TM">T. Mañana</option>
-                        <option value="TT">T. Tarde</option>
+                        <option value="TM">T. Mañana</option><option value="TT">T. Tarde</option>
                     </select>
                 </div>
-                <button onclick="startApp()" class="w-full btn-neon p-5 rounded-xl mt-6 text-xl">Iniciar Protocolo</button>
+                <button onclick="startApp()" class="w-full btn-neon p-5 rounded-xl mt-6 text-xl font-bold uppercase">Iniciar Protocolo</button>
             </div>
-            <button onclick="showAdminPrompt()" class="w-full mt-10 text-xs text-gray-500 hover:text-cyan-400 transition-colors">MODO SUPERVISOR (DOCENTE)</button>
+            <button onclick="showAdminPrompt()" class="w-full mt-10 text-xs text-gray-500 hover:text-cyan-400">MODO SUPERVISOR (DOCENTE)</button>
         </div>
 
-        <!-- PANTALLA PRINCIPAL DE ETAPAS -->
+        <!-- PANTALLA PRINCIPAL -->
         <div id="main-content" class="hidden">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-8 glass-card p-4 px-8">
-                <div id="user-info" class="text-xl text-white font-bold"></div>
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 glass-card p-4 px-8 text-white font-bold">
+                <div id="user-info"></div>
                 <div class="flex items-center space-x-4">
-                    <div class="text-right">
-                        <div class="text-xs text-cyan-500 uppercase font-bold">Sincronización Automática</div>
-                        <div id="progress-val" class="text-2xl neon-text">0%</div>
-                    </div>
+                    <div id="progress-val" class="text-2xl neon-text">0%</div>
                     <div class="w-32 bg-gray-800 rounded-full h-3">
-                        <div id="progress-bar-fill" class="bg-cyan-500 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        <div id="progress-bar-fill" class="bg-cyan-500 h-3 rounded-full transition-all" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <button onclick="showEtapa(1)" id="btn-e1" class="glass-card p-6 text-center transition-all duration-300">
-                    <span class="block text-xs text-gray-500 mb-1">FASE 01</span>
-                    <span class="font-bold uppercase">Arqueología</span>
-                </button>
-                <button onclick="showEtapa(2)" id="btn-e2" class="glass-card p-6 text-center transition-all duration-300 step-locked">
-                    <span class="block text-xs text-gray-500 mb-1">FASE 02</span>
-                    <span class="font-bold uppercase">Sistemas</span>
-                </button>
-                <button onclick="showEtapa(3)" id="btn-e3" class="glass-card p-6 text-center transition-all duration-300 step-locked">
-                    <span class="block text-xs text-gray-500 mb-1">FASE 03</span>
-                    <span class="font-bold uppercase">Ética</span>
-                </button>
-                <button onclick="showEtapa(4)" id="btn-e4" class="glass-card p-6 text-center transition-all duration-300 step-locked">
-                    <span class="block text-xs text-gray-500 mb-1">FASE 04</span>
-                    <span class="font-bold uppercase">Reto Final</span>
-                </button>
+                <button onclick="showEtapa(1)" id="btn-e1" class="glass-card p-6 text-center">FASE 01</button>
+                <button onclick="showEtapa(2)" id="btn-e2" class="glass-card p-6 text-center step-locked">FASE 02</button>
+                <button onclick="showEtapa(3)" id="btn-e3" class="glass-card p-6 text-center step-locked">FASE 03</button>
+                <button onclick="showEtapa(4)" id="btn-e4" class="glass-card p-6 text-center step-locked">FASE 04</button>
             </div>
 
-            <div id="etapa-content" class="glass-card p-8 min-h-[450px] relative">
-                <!-- Dinámico -->
-            </div>
-
-            <div class="mt-8 flex flex-col md:flex-row gap-4 justify-between">
-                <div class="text-xs text-gray-500 italic flex items-center">
-                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></span>
-                    Sus datos se guardan automáticamente en cada pulsación.
-                </div>
-                <button onclick="logout()" class="text-gray-500 hover:text-white transition-colors underline">Finalizar Sesión</button>
+            <div id="etapa-content" class="glass-card p-8 min-h-[400px]"></div>
+            <div class="mt-8 flex justify-between items-center">
+                <div id="status-cloud" class="text-xs italic text-gray-500">Conectando con base de datos...</div>
+                <button onclick="location.reload()" class="text-gray-500 underline">Cerrar Sesión</button>
             </div>
         </div>
 
         <!-- PANEL DOCENTE -->
         <div id="admin-panel" class="hidden glass-card p-8">
-            <div class="flex justify-between items-center mb-8 border-b border-cyan-900 pb-4">
-                <div>
-                    <h2 class="text-3xl neon-text uppercase">Centro de Control</h2>
-                    <p class="text-gray-400">Panel de Monitoreo Docente</p>
-                </div>
-                <button onclick="hideAdmin()" class="bg-red-900/40 hover:bg-red-700 text-red-200 px-6 py-2 rounded-lg border border-red-500 uppercase font-bold">Cerrar Panel</button>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl neon-text">CONTROL DOCENTE</h2>
+                <button onclick="location.reload()" class="bg-red-900/40 px-6 py-2 rounded-lg border border-red-500">SALIR</button>
             </div>
-            
-            <div id="admin-data" class="space-y-8">
-                <!-- Dinámico -->
-            </div>
+            <div id="admin-data" class="space-y-8"></div>
         </div>
     </div>
 
-    <!-- MODAL DOCENTE -->
+    <!-- MODAL PASS -->
     <div id="admin-modal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center p-4 z-50">
-        <div class="glass-card p-10 max-w-sm w-full text-center border-2 border-cyan-500">
-            <h3 class="text-2xl neon-text mb-6 uppercase">Autenticación</h3>
-            <input type="password" id="admin-pass" class="w-full p-4 mb-6 rounded-lg text-center text-2xl tracking-[1em]" maxlength="4">
-            <button onclick="checkAdmin()" class="w-full btn-neon p-4 rounded-xl font-bold">VALIDAR FRECUENCIA</button>
-            <button onclick="closeAdminModal()" class="mt-4 text-gray-500">Cancelar</button>
+        <div class="glass-card p-10 max-w-sm w-full text-center">
+            <h3 class="neon-text mb-6">CLAVE DOCENTE</h3>
+            <input type="password" id="admin-pass" class="w-full p-4 mb-6 rounded-lg text-center text-2xl" maxlength="4">
+            <button onclick="checkAdmin()" class="w-full btn-neon p-4 rounded-xl font-bold">ENTRAR</button>
         </div>
     </div>
 
-    <script>
-        let currentUser = null;
-        let db = [];
+    <!-- FIREBASE SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-        // Cargar base de datos inicial
-        function loadDB() {
-            const data = localStorage.getItem('tecno_db_v2');
-            db = data ? JSON.parse(data) : [];
-        }
-
-        const etapasConfig = {
-            1: { title: "ETAPA 1: ARQUEOLOGÍA E IDENTIFICACIÓN", desc: "Usa tu IA para investigar 4 hitos históricos. Explica la necesidad que los creó.", id: 'e1' },
-            2: { title: "ETAPA 2: ANÁLISIS DE SISTEMAS", desc: "Compara el sistema del Telégrafo frente al de WhatsApp mediante bloques.", id: 'e2' },
-            3: { title: "ETAPA 3: ÉTICA Y SUSTENTABILIDAD", desc: "Realiza un análisis FODA sobre el impacto de los smartphones en el ambiente.", id: 'e3' },
-            4: { title: "ETAPA 4: EL RETO FINAL", desc: "Diseña un sistema de comunicación de emergencia sin electricidad.", id: 'e4' }
+        // 1. AQUÍ CAMBIAS TUS DATOS DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOMox9B7qbrgNoft43o5AepZLw-XnJINY", // El entorno lo proporciona automáticamente
+            authDomain: "comunicacion-a3d7b.firebaseapp.com",
+            projectId: "comunicacion-a3d7b",
+            storageBucket: "comunicacion-a3d7b.firebasestorage.app",
+            messagingSenderId: "89118114508",
+            appId: "1:89118114508:web:7da3a314fec43bb2d23869"
         };
 
-        function startApp() {
-            loadDB();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tecnobot-v1';
+
+        // Variables Globales
+        window.currentUser = null;
+        window.allStudents = [];
+
+        // Auth
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                signInAnonymously(auth);
+            } else {
+                console.log("Autenticado como:", user.uid);
+                // Si estamos en modo docente, escuchar cambios
+                if (document.getElementById('admin-panel').offsetParent !== null) {
+                    listenAllStudents();
+                }
+            }
+        });
+
+        // Funciones de Negocio expuestas a window
+        window.startApp = async () => {
             const nombre = document.getElementById('nombre').value.trim();
             const apellido = document.getElementById('apellido').value.trim();
             const curso = document.getElementById('curso').value;
             const turno = document.getElementById('turno').value;
 
-            if (!nombre || !apellido || !curso || !turno) return alert("Por favor complete todos los datos de acceso.");
+            if (!nombre || !apellido || !curso || !turno) return alert("Complete todos los campos");
 
-            // Buscar registro existente para no duplicar y permitir retomar
-            let existing = db.find(u => 
-                u.nombre.toLowerCase() === nombre.toLowerCase() && 
-                u.apellido.toLowerCase() === apellido.toLowerCase() && 
-                u.curso === curso
-            );
+            const studentId = `${curso}-${apellido}-${nombre}`.toLowerCase().replace(/\s/g, '');
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'alumnos', studentId);
             
-            if (existing) {
-                if (confirm("Se detectó una sesión previa. ¿Deseas retomar tus avances?")) {
-                    currentUser = existing;
-                } else {
-                    db = db.filter(u => u.id !== existing.id);
-                    createProfile(nombre, apellido, curso, turno);
-                }
+            const snap = await getDoc(docRef);
+            if (snap.exists()) {
+                window.currentUser = snap.data();
             } else {
-                createProfile(nombre, apellido, curso, turno);
+                window.currentUser = {
+                    id: studentId,
+                    nombre, apellido, curso, turno,
+                    respuestas: { e1: '', e2: '', e3: '', e4: '' },
+                    progreso: 0,
+                    calificacion: 'Pendiente'
+                };
+                await setDoc(docRef, window.currentUser);
             }
 
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
-            document.getElementById('user-info').innerHTML = `CADETE: <span class="neon-text">${apellido.toUpperCase()}, ${nombre.toUpperCase()}</span> | CURSO: ${curso} | TURNO: ${turno}`;
-            showEtapa(1);
-            calculateProgress();
-        }
+            document.getElementById('user-info').innerHTML = `CADETE: ${window.currentUser.apellido}, ${window.currentUser.nombre} | ${window.currentUser.curso}`;
+            window.showEtapa(1);
+            window.calculateProgress();
+            document.getElementById('status-cloud').innerText = "Conectado a la Nube ✓";
+        };
 
-        function createProfile(nombre, apellido, curso, turno) {
-            currentUser = {
-                id: Date.now(),
-                nombre, apellido, curso, turno,
-                respuestas: { e1: '', e2: '', e3: '', e4: '' },
-                calificacion: 'Pendiente',
-                progreso: 0
-            };
-            db.push(currentUser);
-            localStorage.setItem('tecno_db_v2', JSON.stringify(db));
-        }
+        window.updateLocalResp = async (key, val) => {
+            window.currentUser.respuestas[key] = val;
+            window.calculateProgress();
+            
+            // Guardar en Firestore
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'alumnos', window.currentUser.id);
+            await setDoc(docRef, window.currentUser, { merge: true });
+        };
+
+        window.listenAllStudents = () => {
+            const q = collection(db, 'artifacts', appId, 'public', 'data', 'alumnos');
+            onSnapshot(q, (snapshot) => {
+                window.allStudents = snapshot.docs.map(doc => doc.data());
+                window.renderAdminData();
+            }, (err) => console.error("Error Firestore:", err));
+        };
+
+        window.updateGrade = async (id, val) => {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'alumnos', id);
+            await setDoc(docRef, { calificacion: val }, { merge: true });
+        };
+    </script>
+
+    <script>
+        // Lógica de UI (No depende directamente de Firebase SDK)
+        const etapasConfig = {
+            1: { title: "ETAPA 1: ARQUEOLOGÍA", desc: "Investiga hitos históricos.", id: 'e1' },
+            2: { title: "ETAPA 2: SISTEMAS", desc: "Diagrama de bloques Telégrafo vs WhatsApp.", id: 'e2' },
+            3: { title: "ETAPA 3: ÉTICA", desc: "Impacto ambiental y FODA.", id: 'e3' },
+            4: { title: "ETAPA 4: RETO FINAL", desc: "Sistema sin electricidad.", id: 'e4' }
+        };
 
         function showEtapa(n) {
-            // Verificar si la etapa anterior está completa para permitir avance
-            if (n > 1) {
-                const prevKey = `e${n-1}`;
-                if ((currentUser.respuestas[prevKey] || "").length < 30) {
-                    return showToast(`Misión bloqueada: Completa la Fase ${n-1} con al menos 30 caracteres.`);
-                }
+            if (n > 1 && (window.currentUser.respuestas[`e${n-1}`] || "").length < 30) {
+                return alert("Fase bloqueada. Completa la anterior.");
             }
 
             const config = etapasConfig[n];
             const container = document.getElementById('etapa-content');
             
-            // Actualizar visualmente los botones de fases
             [1,2,3,4].forEach(i => {
                 const btn = document.getElementById(`btn-e${i}`);
                 btn.classList.remove('step-active');
-                
-                const prevResp = currentUser.respuestas[`e${i-1}`] || "";
-                if (i === 1 || prevResp.length >= 30) {
+                if (i === 1 || (window.currentUser.respuestas[`e${i-1}`] && window.currentUser.respuestas[`e${i-1}`].length >= 30)) {
                     btn.classList.remove('step-locked');
-                } else { 
-                    btn.classList.add('step-locked'); 
                 }
             });
             document.getElementById(`btn-e${n}`).classList.add('step-active');
 
             container.innerHTML = `
-                <div class="animate-in fade-in duration-500">
-                    <h3 class="text-3xl neon-text mb-2 uppercase font-bold tracking-tighter">${config.title}</h3>
-                    <p class="mb-6 text-gray-400 italic">${config.desc}</p>
-                    <textarea 
-                        id="area-${config.id}" 
-                        class="w-full h-80 p-6 rounded-xl font-mono text-sm leading-relaxed border border-cyan-500/20" 
-                        placeholder="Escribe tu análisis técnico aquí..."
-                        oninput="updateLocalResp('${config.id}', this.value)">${currentUser.respuestas[config.id]}</textarea>
-                </div>
+                <h3 class="text-3xl neon-text mb-2">${config.title}</h3>
+                <p class="mb-6 text-gray-400 italic">${config.desc}</p>
+                <textarea 
+                    class="w-full h-80 p-6 rounded-xl font-mono text-sm" 
+                    oninput="updateLocalResp('${config.id}', this.value)">${window.currentUser.respuestas[config.id] || ''}</textarea>
             `;
-        }
-
-        function updateLocalResp(key, val) {
-            // 1. Actualizar el objeto local del usuario
-            currentUser.respuestas[key] = val;
-            
-            // 2. Calcular progreso inmediatamente
-            calculateProgress();
-
-            // 3. ACTUALIZACIÓN CRÍTICA: Buscar y actualizar en el array DB global
-            const idx = db.findIndex(u => u.id === currentUser.id);
-            if (idx > -1) {
-                db[idx].respuestas = {...currentUser.respuestas};
-                db[idx].progreso = currentUser.progreso;
-                db[idx].calificacion = currentUser.calificacion;
-                
-                // 4. Guardar en Storage para que el Docente vea los cambios
-                localStorage.setItem('tecno_db_v2', JSON.stringify(db));
-            }
         }
 
         function calculateProgress() {
             let filled = 0;
-            const threshold = 30;
-            if ((currentUser.respuestas.e1 || "").length >= threshold) filled++;
-            if ((currentUser.respuestas.e2 || "").length >= threshold) filled++;
-            if ((currentUser.respuestas.e3 || "").length >= threshold) filled++;
-            if ((currentUser.respuestas.e4 || "").length >= threshold) filled++;
+            const res = window.currentUser.respuestas;
+            if ((res.e1 || "").length >= 30) filled++;
+            if ((res.e2 || "").length >= 30) filled++;
+            if ((res.e3 || "").length >= 30) filled++;
+            if ((res.e4 || "").length >= 30) filled++;
             
-            currentUser.progreso = Math.round((filled / 4) * 100);
-            
-            document.getElementById('progress-val').innerText = `${currentUser.progreso}%`;
-            document.getElementById('progress-bar-fill').style.width = `${currentUser.progreso}%`;
-            
-            // Lógica de calificación automática
-            if (currentUser.progreso === 100 && (currentUser.calificacion === 'Pendiente' || currentUser.calificacion === 'EN PROCESO')) {
-                currentUser.calificacion = 'COMPLETADO';
-            } else if (currentUser.progreso < 100) {
-                currentUser.calificacion = 'EN PROCESO';
-            }
+            window.currentUser.progreso = Math.round((filled / 4) * 100);
+            document.getElementById('progress-val').innerText = `${window.currentUser.progreso}%`;
+            document.getElementById('progress-bar-fill').style.width = `${window.currentUser.progreso}%`;
         }
 
-        function logout() {
-            if (confirm("¿Seguro que deseas finalizar la sesión de hoy?")) {
-                location.reload();
-            }
-        }
-
-        // --- FUNCIONES MODO DOCENTE ---
         function showAdminPrompt() { document.getElementById('admin-modal').classList.remove('hidden'); }
         function closeAdminModal() { document.getElementById('admin-modal').classList.add('hidden'); }
         
         function checkAdmin() {
             if (document.getElementById('admin-pass').value === '1304') {
                 closeAdminModal();
-                showAdminPanel();
-            } else {
-                alert("Frecuencia de acceso incorrecta.");
-                document.getElementById('admin-pass').value = '';
-            }
-        }
-
-        function showAdminPanel() {
-            loadDB(); // Recargar datos frescos antes de mostrar
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-content').classList.add('hidden');
-            document.getElementById('admin-panel').classList.remove('hidden');
-            renderAdminData();
-        }
-
-        function hideAdmin() {
-            document.getElementById('admin-panel').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                window.listenAllStudents(); 
+            } else { alert("Error de frecuencia"); }
         }
 
         function renderAdminData() {
@@ -379,116 +289,28 @@
             let html = "";
 
             cursos.forEach(c => {
-                const alumnos = db.filter(u => u.curso === c);
+                const alumnos = window.allStudents.filter(u => u.curso === c);
                 if (alumnos.length > 0) {
-                    html += `
-                        <div class="glass-card p-6 border-l-4 border-cyan-500">
-                            <h3 class="text-2xl neon-text mb-4 uppercase">División: ${c}</h3>
-                            <div class="overflow-x-auto">
-                                <table class="w-full text-sm text-left">
-                                    <thead class="text-cyan-500 border-b border-gray-800 uppercase text-xs">
-                                        <tr>
-                                            <th class="p-3">Cadete</th>
-                                            <th class="p-3">Turno</th>
-                                            <th class="p-3 text-center">Progreso</th>
-                                            <th class="p-3">Estado / Nota</th>
-                                            <th class="p-3 text-right">Acción</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-gray-900">
-                    `;
+                    html += `<div class="glass-card p-6 border-l-4 border-cyan-500"><h3 class="text-xl neon-text mb-4">CURSO ${c}</h3><table class="w-full text-sm">`;
                     alumnos.sort((a,b) => a.apellido.localeCompare(b.apellido)).forEach(u => {
-                        const rowColor = u.progreso === 100 ? 'text-green-400' : 'text-gray-300';
                         html += `
-                            <tr class="hover:bg-cyan-900/10 transition-colors">
-                                <td class="p-3 font-bold ${rowColor}">${u.apellido.toUpperCase()}, ${u.nombre}</td>
-                                <td class="p-3 text-gray-500">${u.turno}</td>
-                                <td class="p-3">
-                                    <div class="flex items-center justify-center space-x-2">
-                                        <div class="w-20 bg-gray-800 h-2 rounded-full overflow-hidden">
-                                            <div class="bg-cyan-500 h-full" style="width: ${u.progreso}%"></div>
-                                        </div>
-                                        <span class="text-xs">${u.progreso}%</span>
-                                    </div>
+                            <tr class="border-b border-gray-900">
+                                <td class="p-2 font-bold">${u.apellido}, ${u.nombre}</td>
+                                <td class="p-2 text-center text-cyan-400">${u.progreso}%</td>
+                                <td class="p-2">
+                                    <input type="text" class="bg-black border border-gray-700 w-full text-center" 
+                                           value="${u.calificacion}" onchange="updateGrade('${u.id}', this.value)">
                                 </td>
-                                <td class="p-3">
-                                    <input type="text" class="bg-black/50 border border-gray-700 rounded px-2 py-1 text-center w-32 focus:border-cyan-500" 
-                                           value="${u.calificacion}" 
-                                           onchange="updateGrade(${u.id}, this.value)">
+                                <td class="p-2 text-right">
+                                    <button onclick="alert('Ver detalles no implementado en esta vista rápida')" class="text-xs">👁️</button>
                                 </td>
-                                <td class="p-3 text-right">
-                                    <button onclick="viewDetails(${u.id})" class="bg-cyan-900/50 hover:bg-cyan-500 hover:text-black p-2 rounded-lg transition-all" title="Ver informe">
-                                        👁️ Ver Trabajos
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
+                            </tr>`;
                     });
-                    html += `</tbody></table></div></div>`;
+                    html += `</table></div>`;
                 }
             });
-            container.innerHTML = html || `
-                <div class="text-center py-20">
-                    <p class="text-gray-600 italic">No se encontraron registros de cadetes en la base de datos.</p>
-                </div>`;
+            container.innerHTML = html || "<p class='text-center'>Esperando datos...</p>";
         }
-
-        function updateGrade(id, val) {
-            const idx = db.findIndex(u => u.id === id);
-            if (idx > -1) {
-                db[idx].calificacion = val;
-                localStorage.setItem('tecno_db_v2', JSON.stringify(db));
-                showToast("Sincronización de nota exitosa");
-            }
-        }
-
-        function viewDetails(id) {
-            const u = db.find(user => user.id === id);
-            const win = window.open("", "ReporteTecnico", "width=700,height=800");
-            win.document.write(`
-                <html>
-                <head><title>Informe de Cadete: ${u.apellido}</title></head>
-                <body style="background:#0a0a0c;color:#e0e0e0;font-family:sans-serif;padding:40px;line-height:1.6;">
-                    <h1 style="color:#00f2ff;border-bottom:2px solid #00f2ff;padding-bottom:10px;">INFORME TÉCNICO DE COMUNICACIONES</h1>
-                    <p><b>CADETE:</b> ${u.apellido.toUpperCase()}, ${u.nombre} | <b>CURSO:</b> ${u.curso} | <b>TURNO:</b> ${u.turno}</p>
-                    <hr style="border:0;border-top:1px solid #333;margin:20px 0;">
-                    
-                    <div style="margin-bottom:30px;">
-                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 1: Arqueología e Identificación</h3>
-                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e1 || 'SIN DATOS'}</div>
-                    </div>
-                    
-                    <div style="margin-bottom:30px;">
-                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 2: Análisis de Sistemas</h3>
-                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e2 || 'SIN DATOS'}</div>
-                    </div>
-                    
-                    <div style="margin-bottom:30px;">
-                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 3: Ética y Sustentabilidad</h3>
-                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e3 || 'SIN DATOS'}</div>
-                    </div>
-                    
-                    <div style="margin-bottom:30px;">
-                        <h3 style="color:#00f2ff;text-transform:uppercase;">Etapa 4: El Reto Final</h3>
-                        <div style="background:#141419;padding:15px;border-radius:10px;border:1px solid #333;white-space:pre-wrap;">${u.respuestas.e4 || 'SIN DATOS'}</div>
-                    </div>
-                    
-                    <button onclick="window.print()" style="background:#00f2ff;color:#000;border:0;padding:10px 20px;font-weight:bold;border-radius:5px;cursor:pointer;">Imprimir Reporte</button>
-                </body>
-                </html>
-            `);
-        }
-
-        function showToast(msg) {
-            const t = document.createElement('div');
-            t.className = "fixed bottom-10 left-1/2 -translate-x-1/2 bg-cyan-900 border border-cyan-400 text-cyan-100 px-8 py-3 rounded-full text-sm font-bold z-50 shadow-2xl";
-            t.innerText = msg;
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), 2500);
-        }
-
-        // Inicializar DB al cargar
-        window.onload = loadDB;
     </script>
 </body>
 </html>
