@@ -43,6 +43,7 @@
             background: rgba(0, 0, 0, 0.4) !important;
             border: 1px solid rgba(0, 242, 255, 0.3) !important;
             color: #00f2ff !important;
+            resize: none;
         }
         .btn-neon {
             background: linear-gradient(45deg, #00c6ff, #0072ff);
@@ -61,7 +62,7 @@
 
         <!-- PANTALLA DE INGRESO -->
         <div id="login-screen" class="glass-card p-10 max-w-lg mx-auto">
-            <h2 class="text-3xl neon-text text-center mb-8">ACCESO CADETE</h2>
+            <h2 class="text-3xl neon-text text-center mb-8 uppercase">Acceso Cadete</h2>
             <div class="space-y-5">
                 <div class="grid grid-cols-2 gap-4">
                     <input type="text" id="nombre" placeholder="Nombre" class="w-full p-4 rounded-lg bg-black/40 border border-cyan-500/30">
@@ -96,24 +97,27 @@
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <button onclick="showEtapa(1)" id="btn-e1" class="glass-card p-6 text-center">FASE 01</button>
-                <button onclick="showEtapa(2)" id="btn-e2" class="glass-card p-6 text-center step-locked">FASE 02</button>
-                <button onclick="showEtapa(3)" id="btn-e3" class="glass-card p-6 text-center step-locked">FASE 03</button>
-                <button onclick="showEtapa(4)" id="btn-e4" class="glass-card p-6 text-center step-locked">FASE 04</button>
+                <button onclick="showEtapa(1)" id="btn-e1" class="glass-card p-6 text-center font-bold">FASE 01</button>
+                <button onclick="showEtapa(2)" id="btn-e2" class="glass-card p-6 text-center step-locked font-bold">FASE 02</button>
+                <button onclick="showEtapa(3)" id="btn-e3" class="glass-card p-6 text-center step-locked font-bold">FASE 03</button>
+                <button onclick="showEtapa(4)" id="btn-e4" class="glass-card p-6 text-center step-locked font-bold">FASE 04</button>
             </div>
 
             <div id="etapa-content" class="glass-card p-8 min-h-[400px]"></div>
             <div class="mt-8 flex justify-between items-center">
-                <div id="status-cloud" class="text-xs italic text-gray-500">Conectando con base de datos...</div>
-                <button onclick="location.reload()" class="text-gray-500 underline">Cerrar Sesión</button>
+                <div id="status-cloud" class="text-xs italic text-gray-500">Conectando...</div>
+                <button onclick="location.reload()" class="text-gray-500 underline text-sm">Cerrar Sesión</button>
             </div>
         </div>
 
         <!-- PANEL DOCENTE -->
         <div id="admin-panel" class="hidden glass-card p-8">
             <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl neon-text">CONTROL DOCENTE</h2>
-                <button onclick="location.reload()" class="bg-red-900/40 px-6 py-2 rounded-lg border border-red-500">SALIR</button>
+                <div>
+                    <h2 class="text-3xl neon-text uppercase">Control Docente</h2>
+                    <p class="text-gray-500 text-sm">Monitoreo de tareas por Curso y Turno</p>
+                </div>
+                <button onclick="location.reload()" class="bg-red-900/40 px-6 py-2 rounded-lg border border-red-500 text-sm">SALIR</button>
             </div>
             <div id="admin-data" class="space-y-8"></div>
         </div>
@@ -121,10 +125,11 @@
 
     <!-- MODAL PASS -->
     <div id="admin-modal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center p-4 z-50">
-        <div class="glass-card p-10 max-w-sm w-full text-center">
-            <h3 class="neon-text mb-6">CLAVE DOCENTE</h3>
-            <input type="password" id="admin-pass" class="w-full p-4 mb-6 rounded-lg text-center text-2xl" maxlength="4">
-            <button onclick="checkAdmin()" class="w-full btn-neon p-4 rounded-xl font-bold">ENTRAR</button>
+        <div class="glass-card p-10 max-w-sm w-full text-center border border-cyan-500">
+            <h3 class="neon-text mb-6 uppercase">Clave Docente</h3>
+            <input type="password" id="admin-pass" class="w-full p-4 mb-6 rounded-lg text-center text-2xl bg-black border border-cyan-900" maxlength="4">
+            <button onclick="checkAdmin()" class="w-full btn-neon p-4 rounded-xl font-bold uppercase">Entrar</button>
+            <button onclick="closeAdminModal()" class="mt-4 text-xs text-gray-500">Cancelar</button>
         </div>
     </div>
 
@@ -133,7 +138,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, collection, onSnapshot, query } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-
+        
         // 1. AQUÍ CAMBIAS TUS DATOS DE FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyBOMox9B7qbrgNoft43o5AepZLw-XnJINY", // El entorno lo proporciona automáticamente
@@ -144,29 +149,16 @@
             appId: "1:89118114508:web:7da3a314fec43bb2d23869"
         };
 
-        const app = initializeApp(firebaseConfig);
+       const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'tecnobot-v1';
 
-        // Variables Globales
         window.currentUser = null;
         window.allStudents = [];
 
-        // Auth
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                signInAnonymously(auth);
-            } else {
-                console.log("Autenticado como:", user.uid);
-                // Si estamos en modo docente, escuchar cambios
-                if (document.getElementById('admin-panel').offsetParent !== null) {
-                    listenAllStudents();
-                }
-            }
-        });
+        onAuthStateChanged(auth, (user) => { if (!user) signInAnonymously(auth); });
 
-        // Funciones de Negocio expuestas a window
         window.startApp = async () => {
             const nombre = document.getElementById('nombre').value.trim();
             const apellido = document.getElementById('apellido').value.trim();
@@ -175,7 +167,7 @@
 
             if (!nombre || !apellido || !curso || !turno) return alert("Complete todos los campos");
 
-            const studentId = `${curso}-${apellido}-${nombre}`.toLowerCase().replace(/\s/g, '');
+            const studentId = `${curso}-${turno}-${apellido}-${nombre}`.toLowerCase().replace(/\s/g, '');
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'alumnos', studentId);
             
             const snap = await getDoc(docRef);
@@ -183,28 +175,24 @@
                 window.currentUser = snap.data();
             } else {
                 window.currentUser = {
-                    id: studentId,
-                    nombre, apellido, curso, turno,
+                    id: studentId, nombre, apellido, curso, turno,
                     respuestas: { e1: '', e2: '', e3: '', e4: '' },
-                    progreso: 0,
-                    calificacion: 'Pendiente'
+                    progreso: 0, calificacion: 'Pendiente'
                 };
                 await setDoc(docRef, window.currentUser);
             }
 
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById('main-content').classList.remove('hidden');
-            document.getElementById('user-info').innerHTML = `CADETE: ${window.currentUser.apellido}, ${window.currentUser.nombre} | ${window.currentUser.curso}`;
+            document.getElementById('user-info').innerHTML = `CADETE: ${window.currentUser.apellido}, ${window.currentUser.nombre} | ${window.currentUser.curso} [${window.currentUser.turno}]`;
             window.showEtapa(1);
             window.calculateProgress();
-            document.getElementById('status-cloud').innerText = "Conectado a la Nube ✓";
+            document.getElementById('status-cloud').innerText = "✓ Conectado a la Nube";
         };
 
         window.updateLocalResp = async (key, val) => {
             window.currentUser.respuestas[key] = val;
             window.calculateProgress();
-            
-            // Guardar en Firestore
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'alumnos', window.currentUser.id);
             await setDoc(docRef, window.currentUser, { merge: true });
         };
@@ -214,7 +202,7 @@
             onSnapshot(q, (snapshot) => {
                 window.allStudents = snapshot.docs.map(doc => doc.data());
                 window.renderAdminData();
-            }, (err) => console.error("Error Firestore:", err));
+            });
         };
 
         window.updateGrade = async (id, val) => {
@@ -224,17 +212,36 @@
     </script>
 
     <script>
-        // Lógica de UI (No depende directamente de Firebase SDK)
         const etapasConfig = {
-            1: { title: "ETAPA 1: ARQUEOLOGÍA", desc: "Investiga hitos históricos.", id: 'e1' },
-            2: { title: "ETAPA 2: SISTEMAS", desc: "Diagrama de bloques Telégrafo vs WhatsApp.", id: 'e2' },
-            3: { title: "ETAPA 3: ÉTICA", desc: "Impacto ambiental y FODA.", id: 'e3' },
-            4: { title: "ETAPA 4: RETO FINAL", desc: "Sistema sin electricidad.", id: 'e4' }
+            1: { 
+                title: "ETAPA 1: ARQUEOLOGÍA E IDENTIFICACIÓN", 
+                desc: "Investiga 4 hitos históricos. Usa a tu Agente IA para saber qué necesidad los creó y cómo cambiaron el mundo.",
+                consigna: "En tu carpeta: Crea una tabla con 4 inventos detallando Necesidad, Componentes e Impacto Social. Aquí, resume tu investigación:",
+                id: 'e1' 
+            },
+            2: { 
+                title: "ETAPA 2: ANÁLISIS DE SISTEMAS", 
+                desc: "Diagramación lógica. Compara el Telégrafo vs WhatsApp con tu Agente.",
+                consigna: "En tu carpeta: Dibuja los diagramas. Aquí, explica qué bloques representan el 'ruido' y cómo cambió el codificador del pasado al presente:",
+                id: 'e2' 
+            },
+            3: { 
+                title: "ETAPA 3: ÉTICA Y SUSTENTABILIDAD", 
+                desc: "Análisis FODA. Reflexiona sobre el impacto ambiental de los celulares.",
+                consigna: "Aquí escribe tu análisis FODA (Fortalezas, Oportunidades, Debilidades, Amenazas) y tu conclusión sobre el impacto ambiental:",
+                id: 'e3' 
+            },
+            4: { 
+                title: "ETAPA 4: EL RETO FINAL", 
+                desc: "Diseña un sistema de comunicación sin electricidad.",
+                consigna: "Describe tu invento, cómo funciona y qué nota te puso tu Agente Profesor tras evaluarlo:",
+                id: 'e4' 
+            }
         };
 
         function showEtapa(n) {
             if (n > 1 && (window.currentUser.respuestas[`e${n-1}`] || "").length < 30) {
-                return alert("Fase bloqueada. Completa la anterior.");
+                return alert("⚠️ Fase bloqueada. Debes completar al menos 30 caracteres en la fase anterior.");
             }
 
             const config = etapasConfig[n];
@@ -250,10 +257,12 @@
             document.getElementById(`btn-e${n}`).classList.add('step-active');
 
             container.innerHTML = `
-                <h3 class="text-3xl neon-text mb-2">${config.title}</h3>
-                <p class="mb-6 text-gray-400 italic">${config.desc}</p>
+                <h3 class="text-2xl neon-text mb-1 uppercase font-bold">${config.title}</h3>
+                <p class="mb-4 text-cyan-400 text-sm font-bold uppercase tracking-wider">${config.desc}</p>
+                <p class="mb-4 text-gray-300 text-sm italic">${config.consigna}</p>
                 <textarea 
-                    class="w-full h-80 p-6 rounded-xl font-mono text-sm" 
+                    class="w-full h-72 p-6 rounded-xl font-mono text-sm leading-relaxed" 
+                    placeholder="Escribe tu trabajo aquí..."
                     oninput="updateLocalResp('${config.id}', this.value)">${window.currentUser.respuestas[config.id] || ''}</textarea>
             `;
         }
@@ -286,31 +295,63 @@
         function renderAdminData() {
             const container = document.getElementById('admin-data');
             const cursos = ['2-1', '2-2', '2-3', '2-4'];
+            const turnos = ['TM', 'TT'];
             let html = "";
 
             cursos.forEach(c => {
-                const alumnos = window.allStudents.filter(u => u.curso === c);
-                if (alumnos.length > 0) {
-                    html += `<div class="glass-card p-6 border-l-4 border-cyan-500"><h3 class="text-xl neon-text mb-4">CURSO ${c}</h3><table class="w-full text-sm">`;
-                    alumnos.sort((a,b) => a.apellido.localeCompare(b.apellido)).forEach(u => {
+                turnos.forEach(t => {
+                    const alumnos = window.allStudents.filter(u => u.curso === c && u.turno === t);
+                    if (alumnos.length > 0) {
                         html += `
-                            <tr class="border-b border-gray-900">
-                                <td class="p-2 font-bold">${u.apellido}, ${u.nombre}</td>
-                                <td class="p-2 text-center text-cyan-400">${u.progreso}%</td>
-                                <td class="p-2">
-                                    <input type="text" class="bg-black border border-gray-700 w-full text-center" 
-                                           value="${u.calificacion}" onchange="updateGrade('${u.id}', this.value)">
-                                </td>
-                                <td class="p-2 text-right">
-                                    <button onclick="alert('Ver detalles no implementado en esta vista rápida')" class="text-xs">👁️</button>
-                                </td>
-                            </tr>`;
-                    });
-                    html += `</table></div>`;
-                }
+                        <div class="glass-card p-6 border-l-4 border-cyan-500">
+                            <h3 class="text-xl neon-text mb-4 uppercase">CURSO: ${c} | TURNO: ${t === 'TM' ? 'MAÑANA' : 'TARDE'}</h3>
+                            <table class="w-full text-left text-xs">
+                                <thead class="text-cyan-600 border-b border-gray-800 uppercase">
+                                    <tr>
+                                        <th class="p-2">Apellido y Nombre</th>
+                                        <th class="p-2 text-center">Avance</th>
+                                        <th class="p-2 text-center">Nota</th>
+                                        <th class="p-2 text-right">Detalles</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+                        alumnos.sort((a,b) => a.apellido.localeCompare(b.apellido)).forEach(u => {
+                            html += `
+                                <tr class="border-b border-gray-900/50 hover:bg-cyan-900/10">
+                                    <td class="p-2 font-bold">${u.apellido.toUpperCase()}, ${u.nombre}</td>
+                                    <td class="p-2 text-center text-cyan-400 font-bold">${u.progreso}%</td>
+                                    <td class="p-2">
+                                        <input type="text" class="bg-black border border-gray-800 w-full text-center text-green-400 font-bold py-1 rounded" 
+                                               value="${u.calificacion}" onchange="updateGrade('${u.id}', this.value)">
+                                    </td>
+                                    <td class="p-2 text-right">
+                                        <button onclick="verDetalles('${u.id}')" class="bg-cyan-900/40 p-1 px-3 rounded hover:bg-cyan-500 hover:text-black transition-all">VER</button>
+                                    </td>
+                                </tr>`;
+                        });
+                        html += `</tbody></table></div>`;
+                    }
+                });
             });
-            container.innerHTML = html || "<p class='text-center'>Esperando datos...</p>";
+            container.innerHTML = html || "<p class='text-center py-10 text-gray-500 italic'>No hay alumnos conectados aún...</p>";
         }
+
+        window.verDetalles = (id) => {
+            const u = window.allStudents.find(user => user.id === id);
+            const win = window.open("", "Reporte", "width=600,height=700");
+            win.document.write(`
+                <body style="background:#0a0a0c; color:#00f2ff; font-family: sans-serif; padding:30px;">
+                    <h2 style="border-bottom: 2px solid #00f2ff; padding-bottom:10px;">EXPEDIENTE: ${u.apellido.toUpperCase()}, ${u.nombre}</h2>
+                    <p style="color:#aaa;"><b>CURSO:</b> ${u.curso} | <b>TURNO:</b> ${u.turno}</p>
+                    <div style="background:#1a1a1f; padding:20px; border-radius:10px; margin-top:20px; border: 1px solid #333;">
+                        <p><b>ETAPA 1 (Arqueología):</b><br><span style="color:#eee;">${u.respuestas.e1 || 'Sin completar'}</span></p><hr style="border-color:#333;">
+                        <p><b>ETAPA 2 (Sistemas):</b><br><span style="color:#eee;">${u.respuestas.e2 || 'Sin completar'}</span></p><hr style="border-color:#333;">
+                        <p><b>ETAPA 3 (Ética):</b><br><span style="color:#eee;">${u.respuestas.e3 || 'Sin completar'}</span></p><hr style="border-color:#333;">
+                        <p><b>ETAPA 4 (Reto Final):</b><br><span style="color:#eee;">${u.respuestas.e4 || 'Sin completar'}</span></p>
+                    </div>
+                </body>
+            `);
+        };
     </script>
 </body>
 </html>
